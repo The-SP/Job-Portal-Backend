@@ -8,6 +8,7 @@ urlpatterns = [
     path("auth/", include("djoser.urls.jwt")),
     # Include other app urls
     path("user/", include("user_system.urls")),
+    path("api/resume/", include("resume.urls")),
 ]
 
 # urlpatterns += [re_path(r"^.*", TemplateView.as_view(template_name="index.html"))]
