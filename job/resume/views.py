@@ -46,3 +46,108 @@ class EducationDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsOwner]
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
+
+
+class ExperienceListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
+
+    def perform_create(self, serializer):
+        experience_instance = serializer.save()
+        resume = Resume.objects.get(user=self.request.user)
+        resume.experience.add(experience_instance)
+
+    def get_queryset(self):
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.experience.all()
+
+
+class ExperienceDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Experience.objects.all()
+    serializer_class = ExperienceSerializer
+
+
+class ProjectListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+    def perform_create(self, serializer):
+        project_instance = serializer.save()
+        resume = Resume.objects.get(user=self.request.user)
+        resume.projects.add(project_instance)
+
+    def get_queryset(self):
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.projects.all()
+
+
+class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
+class SkillListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+
+    def perform_create(self, serializer):
+        skill_instance = serializer.save()
+        resume = Resume.objects.get(user=self.request.user)
+        resume.skills.add(skill_instance)
+
+    def get_queryset(self):
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.skills.all()
+
+
+class SkillDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer
+
+
+class InterestListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Interest.objects.all()
+    serializer_class = InterestSerializer
+
+    def perform_create(self, serializer):
+        interest_instance = serializer.save()
+        resume = Resume.objects.get(user=self.request.user)
+        resume.interests.add(interest_instance)
+
+    def get_queryset(self):
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.interests.all()
+
+
+class InterestDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Interest.objects.all()
+    serializer_class = InterestSerializer
+
+
+class AwardListCreateView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Award.objects.all()
+    serializer_class = AwardSerializer
+
+    def perform_create(self, serializer):
+        award_instance = serializer.save()
+        resume = Resume.objects.get(user=self.request.user)
+        resume.awards.add(award_instance)
+
+    def get_queryset(self):
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.awards.all()
+
+
+class AwardDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Award.objects.all()
+    serializer_class = AwardSerializer
