@@ -30,11 +30,9 @@ class EducationListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         education_instance = serializer.save()
-        # Find or create resume of logged in user
-        resume, created = Resume.objects.get_or_create(user=self.request.user)
+        resume = Resume.objects.get(user=self.request.user)
         # Add this education instance to the resume
         resume.education.add(education_instance)
-        print(education_instance, resume.education.all(), created)
 
     def get_queryset(self):
         """
