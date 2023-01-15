@@ -19,6 +19,15 @@ class IsOwner(permissions.BasePermission):
         return True
 
 
+class ResumeDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated, IsOwner]
+    queryset = Resume.objects.all()
+    serializer_class = ResumeSerializer
+
+    def get_object(self):
+        return Resume.objects.get(user=self.request.user)
+
+
 class EducationListCreateView(generics.ListCreateAPIView):
     """
     A view for handling the List and Create operations for Education model.

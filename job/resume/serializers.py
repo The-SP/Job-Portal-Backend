@@ -39,12 +39,12 @@ class AwardSerializer(serializers.ModelSerializer):
 
 
 class ResumeSerializer(serializers.ModelSerializer):
-    education = EducationSerializer(many=True)
-    skills = SkillSerializer(many=True)
-    experience = ExperienceSerializer(many=True)
-    projects = ProjectSerializer(many=True)
-    interests = InterestSerializer(many=True)
-    awards = AwardSerializer(many=True)
+    education = EducationSerializer(many=True, read_only=True)
+    skills = SkillSerializer(many=True, read_only=True)
+    experience = ExperienceSerializer(many=True, read_only=True)
+    projects = ProjectSerializer(many=True, read_only=True)
+    interests = InterestSerializer(many=True, read_only=True)
+    awards = AwardSerializer(many=True, read_only=True)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
