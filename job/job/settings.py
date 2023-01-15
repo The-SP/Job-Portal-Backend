@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "djoser",
     "corsheaders",
+    "drf_spectacular",
     "user_system",
     "resume",
 ]
@@ -152,6 +153,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    # API Generator
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
@@ -195,3 +198,11 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = "user_system.UserAccount"
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Job Portal API',
+    # 'DESCRIPTION': 'Your project description',
+    # 'VERSION': '1.0.0',
+    # 'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
