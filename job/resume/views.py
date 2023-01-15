@@ -11,24 +11,37 @@ class IsOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:  # Safe=GET
             return True
-        # Allow write permission to owner only
-        if obj.resume_set.first().user != request.user:
+        # Check if the obj has any resume set and Allow write permission to owner only
+        if not obj.resume_set.exists() or obj.resume_set.first().user != request.user:
             raise PermissionDenied(
                 detail="You are not the owner of this resume object."
             )
         return True
 
 
-class EducationCreateView(generics.CreateAPIView):
+class EducationListCreateView(generics.ListCreateAPIView):
+    """
+    A view for handling the List and Create operations for Education model.
+    """
+
     permission_classes = [IsAuthenticated]
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
 
     def perform_create(self, serializer):
         education_instance = serializer.save()
+        # Find or create resume of logged in user
         resume, created = Resume.objects.get_or_create(user=self.request.user)
+        # Add this education instance to the resume
         resume.education.add(education_instance)
         print(education_instance, resume.education.all(), created)
+
+    def get_queryset(self):
+        """
+        Overriding the get_queryset method to return only Education related to owner of the resume
+        """
+        resume = Resume.objects.get(user=self.request.user)
+        return resume.education.all()
 
 
 class EducationDetailView(generics.RetrieveUpdateDestroyAPIView):
