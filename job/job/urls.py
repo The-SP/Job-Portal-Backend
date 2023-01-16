@@ -7,7 +7,7 @@ urlpatterns = [
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     # Include other app urls
-    path("user/", include("user_system.urls")),
+    path("api/", include("user_system.urls")),
     path("api/resume/", include("resume.urls")),
     # Swagger UI
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

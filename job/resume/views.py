@@ -1,26 +1,12 @@
 from rest_framework import generics
-from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
 
+from user_system.permissions import IsSeeker, IsOwner
 from .models import *
 from .serializers import *
 
 
-class IsOwner(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:  # Safe=GET
-            return True
-        # Check if the obj has any resume set and Allow write permission to owner only
-        if not obj.resume_set.exists() or obj.resume_set.first().user != request.user:
-            raise PermissionDenied(
-                detail="You are not the owner of this resume object."
-            )
-        return True
-
-
 class ResumeDetailView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Resume.objects.all()
     serializer_class = ResumeSerializer
 
@@ -33,7 +19,7 @@ class EducationListCreateView(generics.ListCreateAPIView):
     A view for handling the List and Create operations for Education model.
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
 
@@ -52,13 +38,13 @@ class EducationListCreateView(generics.ListCreateAPIView):
 
 
 class EducationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Education.objects.all()
     serializer_class = EducationSerializer
 
 
 class ExperienceListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
@@ -73,13 +59,13 @@ class ExperienceListCreateView(generics.ListCreateAPIView):
 
 
 class ExperienceDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Experience.objects.all()
     serializer_class = ExperienceSerializer
 
 
 class ProjectListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
@@ -94,13 +80,13 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
 
 class SkillListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
 
@@ -115,13 +101,13 @@ class SkillListCreateView(generics.ListCreateAPIView):
 
 
 class SkillDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
 
 
 class InterestListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
 
@@ -136,13 +122,13 @@ class InterestListCreateView(generics.ListCreateAPIView):
 
 
 class InterestDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Interest.objects.all()
     serializer_class = InterestSerializer
 
 
 class AwardListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSeeker]
     queryset = Award.objects.all()
     serializer_class = AwardSerializer
 
@@ -157,6 +143,6 @@ class AwardListCreateView(generics.ListCreateAPIView):
 
 
 class AwardDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsSeeker, IsOwner]
     queryset = Award.objects.all()
     serializer_class = AwardSerializer

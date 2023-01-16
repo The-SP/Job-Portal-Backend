@@ -2,14 +2,19 @@ from rest_framework import generics
 
 from user_system.models import Profile
 from user_system.serializers import ProfileSerializer
+from user_system.permissions import IsSeeker
 
 
-class ProfileCreate(generics.CreateAPIView):
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
+"""
+Profile Create (for Seeker only) is handled automatically on user signup using signals.
+"""
+# class ProfileCreate(generics.CreateAPIView):
+#     queryset = Profile.objects.all()
+#     serializer_class = ProfileSerializer
 
 
-class ProfileDetailUpdate(generics.RetrieveUpdateAPIView):
+class ProfileDetailView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsSeeker]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
