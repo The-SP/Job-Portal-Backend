@@ -25,7 +25,11 @@ JOB_LOCATION_CHOICES = (
 )
 
 
-class BasicInformation(models.Model):
+class Job(models.Model):
+
+    """Basic Information"""
+
+    title = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
     job_level = models.CharField(max_length=255, choices=JOB_LEVEL_CHOICES)
     no_of_vacancy = models.IntegerField()
@@ -34,28 +38,20 @@ class BasicInformation(models.Model):
     salary_range = models.CharField(max_length=255)
     deadline = models.DateField()
 
-
-class Specification(models.Model):
+    """ Specification """
     education_level = models.CharField(max_length=255, null=True, blank=True)
     experience_required = models.IntegerField(null=True, blank=True)
     skill_required = models.TextField(null=True, blank=True)
 
-
-class Description(models.Model):
+    """ Additional Description """
     tasks = models.TextField(null=True, blank=True)
     perks_and_benefits = models.TextField(null=True, blank=True)
 
-
-class Job(models.Model):
-    title = models.CharField(max_length=255)
+    """ Company """
     posted_by = models.ForeignKey(
         UserAccount, on_delete=models.CASCADE, related_name="jobs_posted"
     )
+
+    """ Dates """
     created_at = models.DateTimeField(auto_now_add=True)
-    basic_info = models.OneToOneField(BasicInformation, on_delete=models.CASCADE)
-    specification = models.OneToOneField(
-        Specification, on_delete=models.CASCADE, null=True, blank=True
-    )
-    description = models.OneToOneField(
-        Description, on_delete=models.CASCADE, null=True, blank=True
-    )
+    updated_at = models.DateTimeField(auto_now=True)
