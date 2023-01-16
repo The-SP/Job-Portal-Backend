@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "user_system",
     "resume",
+    "hiring",
 ]
 
 MIDDLEWARE = [
