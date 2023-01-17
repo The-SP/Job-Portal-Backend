@@ -34,7 +34,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Profile(models.Model):
+class SeekerProfile(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, null=True, blank=True)
@@ -49,3 +49,17 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.first_name
+
+
+class EmployerProfile(models.Model):
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
+    company_name = models.CharField(max_length=100)
+    company_description = models.TextField(null=True, blank=True)
+    company_website = models.URLField(null=True, blank=True)
+    company_location = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    contact_email = models.EmailField(
+        max_length=100, unique=True, null=True, blank=True
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    # company_logo = models.ImageField(upload_to='employer_logos/', null=True, blank=True)
