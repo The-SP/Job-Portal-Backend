@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import UserAccount, Profile
+from .models import UserAccount, SeekerProfile, EmployerProfile
 from resume.models import Resume
 
 
@@ -10,6 +10,9 @@ def create_profile_resume(sender, instance, created, **kwargs):
     """
     Signal to create profile and resume when Seeker user is created
     """
-    if created and not instance.is_employer:
-        Profile.objects.create(user=instance, first_name=instance.name)
-        Resume.objects.create(user=instance)
+    if created:
+        if instance.is_employer:
+            EmployerProfile.objects.create(user=instance, company_name=instance.name)
+        else:
+            SeekerProfile.objects.create(user=instance, first_name=instance.name)
+            Resume.objects.create(user=instance)
