@@ -11,4 +11,6 @@ urlpatterns = [
         JobUpdateDestroyView.as_view(),
         name="job-update-destroy",
     ),
+    # Scraped jobs
+    path("scraped/", ScrapedJobListView.as_view(), name="scraped-job-list"),
 ]

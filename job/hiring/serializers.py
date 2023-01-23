@@ -29,3 +29,15 @@ class CreateJobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
         fields = "__all__"
+
+
+# Web Scraping
+class ScrapedJobSerializer(serializers.Serializer):
+    logo_url = serializers.URLField()
+    url = serializers.URLField()
+    title = serializers.CharField()
+    company = serializers.CharField()
+    location = serializers.CharField()
+    tags = serializers.ListField(child=serializers.CharField())
+    salary = serializers.CharField()
+    deadline = serializers.CharField()
