@@ -44,3 +44,18 @@ class IsJobOwner(permissions.BasePermission):
         if obj.posted_by != request.user:
             raise PermissionDenied(detail="You are not the owner of this job object.")
         return True
+
+
+# # Allow the owner of the job to view its job-applications
+# class IsHiringManager(permissions.BasePermission):
+#     def has_object_permission(self, request, view, obj):
+#         if obj.job.posted_by != request.user:
+#             raise PermissionDenied(detail="You are not the owner of this job object.")
+#         return True
+
+
+class IsApplicationOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if obj.user != request.user:
+            raise PermissionDenied(detail="You are not the owner of this job-application.")
+        return True

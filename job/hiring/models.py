@@ -55,3 +55,19 @@ class Job(models.Model):
     """ Dates """
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class JobApplication(models.Model):
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="applications"
+    )
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="applications")
+    # resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    cover_letter = models.TextField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Application for {self.job.title} by {self.user.name}"

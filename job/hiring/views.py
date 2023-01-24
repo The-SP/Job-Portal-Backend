@@ -2,7 +2,7 @@ import pandas as pd
 import ast
 from rest_framework import generics
 
-from user_system.permissions import IsEmployer, IsJobOwner
+from user_system.permissions import IsEmployer, IsJobOwner, IsSeeker, IsApplicationOwner
 from .models import *
 from .serializers import *
 
@@ -47,17 +47,56 @@ class JobUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         serializer.save(posted_by=self.request.user)
 
 
-# Web Scraping 
+# Web Scraping
 # List all jobs with few info
 class ScrapedJobListView(generics.ListAPIView):
     serializer_class = ScrapedJobSerializer
 
     def get_queryset(self):
-        jobs1 = pd.read_csv('scrapper/jobs_csv/jobs1.csv')
-        jobs2 = pd.read_csv('scrapper/jobs_csv/jobs2.csv')
+        jobs1 = pd.read_csv("scrapper/jobs_csv/jobs1.csv")
+        jobs2 = pd.read_csv("scrapper/jobs_csv/jobs2.csv")
         # tags is stored as string so, convert back to list of string
-        jobs1['tags'] = jobs1['tags'].apply(lambda x: ast.literal_eval(x))
-        jobs2['tags'] = jobs2['tags'].apply(lambda x: ast.literal_eval(x))
+        jobs1["tags"] = jobs1["tags"].apply(lambda x: ast.literal_eval(x))
+        jobs2["tags"] = jobs2["tags"].apply(lambda x: ast.literal_eval(x))
         # Convert pandas dataframe to list of dictionaries
-        jobs_list = jobs1.to_dict(orient='records') + jobs2.to_dict(orient='records')
+        jobs_list = jobs1.to_dict(orient="records") + jobs2.to_dict(orient="records")
         return jobs_list
+
+
+""" Views for Job Applications """
+
+
+class ApplicationCreateView(generics.CreateAPIView):
+    permission_classes = [IsSeeker]
+    queryset = JobApplication.objects.all()
+    serializer_class = CreateJobApplicationSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+# Allow owner of the job-application to update and delete
+class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsSeeker, IsApplicationOwner]
+    queryset = JobApplication.objects.all()
+    serializer_class = CreateJobApplicationSerializer
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserApplicationListView(generics.ListAPIView):
+    permission_classes = [IsSeeker]
+    serializer_class = JobApplicationSerializer
+
+    def get_queryset(self):
+        return self.request.user.applications.all()
+
+
+class GetApplicationsForJob(generics.ListAPIView):
+    permission_classes = [IsEmployer]
+    serializer_class = JobApplicationSerializer
+
+    def get_queryset(self):
+        job_id = self.kwargs["job_id"]
+        return JobApplication.objects.filter(job_id=job_id, job__posted_by=self.request.user)

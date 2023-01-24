@@ -13,4 +13,25 @@ urlpatterns = [
     ),
     # Scraped jobs
     path("scraped/", ScrapedJobListView.as_view(), name="scraped-job-list"),
+    # Job Applications
+    path(
+        "applications/create/",
+        ApplicationCreateView.as_view(),
+        name="application-create",
+    ),
+    path(
+        "applications/<int:pk>/",
+        ApplicationDetailView.as_view(),
+        name="application-detail",
+    ),
+    path(
+        "user-applications/",
+        UserApplicationListView.as_view(),
+        name="user-application-list",
+    ),
+    path(
+        "<int:job_id>/applications/",
+        GetApplicationsForJob.as_view(),
+        name="job-application-list",
+    ),
 ]
