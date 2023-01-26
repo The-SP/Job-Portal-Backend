@@ -14,5 +14,5 @@ def create_profile_resume(sender, instance, created, **kwargs):
         if instance.is_employer:
             EmployerProfile.objects.create(user=instance, company_name=instance.name)
         else:
-            SeekerProfile.objects.create(user=instance, first_name=instance.name)
+            SeekerProfile.objects.create(user=instance, name=instance.name, email=instance.email)
             Resume.objects.create(user=instance)

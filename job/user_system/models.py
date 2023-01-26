@@ -36,30 +36,35 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 class SeekerProfile(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100, null=True, blank=True)
     # avatar = models.ImageField(
     #     max_length=255, upload_to="profile_images/", null=True, blank=True
     # )
-    bio = models.TextField(null=True, blank=True)
-    dob = models.DateField(null=True, blank=True)
-    country = models.CharField(max_length=100, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
     city = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    github = models.URLField(max_length=200, null=True, blank=True)
+    linkedin = models.URLField(max_length=200, null=True, blank=True)
+    website = models.URLField(max_length=200, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.first_name
+        return self.name
 
 
 class EmployerProfile(models.Model):
     user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
     company_name = models.CharField(max_length=100)
-    company_description = models.TextField(null=True, blank=True)
-    company_website = models.URLField(null=True, blank=True)
     company_location = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
-    contact_email = models.EmailField(
-        max_length=100, unique=True, null=True, blank=True
-    )
+    company_description = models.TextField(null=True, blank=True)
+    linkedin = models.URLField(max_length=200, null=True, blank=True)
+    website = models.URLField(max_length=200, null=True, blank=True)
+    contact_email = models.EmailField(max_length=100, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     # company_logo = models.ImageField(upload_to='employer_logos/', null=True, blank=True)
+
+    def __str__(self):
+        return self.company_name

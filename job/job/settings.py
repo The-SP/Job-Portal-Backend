@@ -207,3 +207,5 @@ SPECTACULAR_SETTINGS = {
     # 'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+TIME_ZONE = 'Asia/Katmandu'
