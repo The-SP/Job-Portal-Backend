@@ -8,7 +8,7 @@ from .serializers import *
 
 # List all jobs with few info to all users (no login required)
 class JobListView(generics.ListAPIView):
-    queryset = Job.objects.all()
+    queryset = Job.objects.all().order_by('-created_at')
     serializer_class = ShortJobSerializer
 
 
@@ -24,7 +24,7 @@ class EmployerJobListView(generics.ListAPIView):
     permission_classes = [IsEmployer]
 
     def get_queryset(self):
-        return Job.objects.filter(posted_by=self.request.user)
+        return Job.objects.filter(posted_by=self.request.user).order_by('-created_at')
 
 
 # Allow only employer user to create new jobs
@@ -90,7 +90,7 @@ class UserApplicationListView(generics.ListAPIView):
     serializer_class = JobApplicationSerializer
 
     def get_queryset(self):
-        return self.request.user.applications.all()
+        return self.request.user.applications.all().order_by('-created_at')
 
 
 class GetApplicationsForJob(generics.ListAPIView):

@@ -15,7 +15,7 @@ class ShortJobSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
-            "category",
+            "location",
             "job_level",
             "salary_range",
             "deadline",

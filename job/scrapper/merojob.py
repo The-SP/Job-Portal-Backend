@@ -49,7 +49,7 @@ def get_jobs(html_filename):
             "location": location.strip(),
             "tags": tags,
             "salary": "",
-            "deadline": deadline.strip(),
+            "deadline": deadline.strip()[14:-9],
         }
 
         # Append the dictionary to the list

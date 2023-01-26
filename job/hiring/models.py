@@ -18,7 +18,7 @@ EMPLOYMENT_TYPE_CHOICES = (
     ("freelance", "Freelance"),
 )
 
-JOB_LOCATION_CHOICES = (
+JOB_NATURE_CHOICES = (
     ("remote", "Remote"),
     ("work-from-home", "Work-from-home"),
     ("office", "Office"),
@@ -30,13 +30,15 @@ class Job(models.Model):
     """Basic Information"""
 
     title = models.CharField(max_length=255)
-    category = models.CharField(max_length=255)
-    job_level = models.CharField(max_length=255, choices=JOB_LEVEL_CHOICES)
+    location = models.CharField(max_length=255)
     no_of_vacancy = models.IntegerField()
-    employment_type = models.CharField(max_length=255, choices=EMPLOYMENT_TYPE_CHOICES)
-    job_location = models.CharField(max_length=255, choices=JOB_LOCATION_CHOICES)
     salary_range = models.CharField(max_length=255)
     deadline = models.DateField()
+
+    """ Choice Fields """
+    job_level = models.CharField(max_length=255, choices=JOB_LEVEL_CHOICES)
+    employment_type = models.CharField(max_length=255, choices=EMPLOYMENT_TYPE_CHOICES)
+    job_nature = models.CharField(max_length=255, choices=JOB_NATURE_CHOICES)
 
     """ Specification """
     education_level = models.CharField(max_length=255, null=True, blank=True)
