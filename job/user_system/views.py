@@ -29,3 +29,9 @@ class EmployerProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return EmployerProfile.objects.get(user=self.request.user)
+
+
+# Allow all users to view company details
+class CompanyProfileView(generics.RetrieveAPIView):
+    queryset = EmployerProfile.objects.all()
+    serializer_class = EmployerProfileSerializer
