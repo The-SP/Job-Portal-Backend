@@ -3,12 +3,24 @@ from datetime import datetime
 
 from .models import *
 from user_system.models import EmployerProfile
+from user_system.serializers import EmployerProfileSerializer
 
 
 class JobSerializer(serializers.ModelSerializer):
+    company = EmployerProfileSerializer(read_only=True)
+
     class Meta:
         model = Job
         fields = "__all__"
+
+    # Get the details of Company
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Get the profile from posted_by then add it to the JobSerializer data
+        representation["company"] = EmployerProfileSerializer(
+            EmployerProfile.objects.get(user=instance.posted_by)
+        ).data
+        return representation
 
 
 class ShortJobSerializer(serializers.ModelSerializer):
