@@ -10,7 +10,7 @@ def run_files():
     print("CSV Generated Successfully\n")
     subprocess.run([sys.executable, 'scrapper/hamrodevjobs.py'])
 
-    print("Extracting hamrodevjobs...")
+    print("Extracting merojob...")
     print("CSV Generated Successfully\n")
     subprocess.run([sys.executable, 'scrapper/merojob.py'])
     print("Scraping complete.")

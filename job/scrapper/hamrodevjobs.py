@@ -29,8 +29,12 @@ for div in divs:
     tags = []
     for tag in div.find_all("span", class_="badge default mr-2 badge-primary badge-custom badge-pill mb-2 ng-star-inserted"):
         tags.append(tag.get_text(strip=True))
-    salary = div.find("div", class_="job-salary-mobile").get_text(strip=True)
-
+    salary_div = div.find("div", class_="job-salary-mobile")
+    if salary_div:
+        salary = salary_div.get_text(strip=True)
+    else:
+        salary = ''
+        
     # Create a dictionary for each div
     job = {
         "logo_url": logo_url.strip(),
