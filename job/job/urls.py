@@ -10,6 +10,7 @@ urlpatterns = [
     path("api/", include("user_system.urls")),
     path("api/resume/", include("resume.urls")),
     path("api/jobs/", include("hiring.urls")),
+    path("api/jobs/", include("recommender.urls")),
     # Swagger UI
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

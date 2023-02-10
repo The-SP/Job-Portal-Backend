@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "user_system",
     "resume",
     "hiring",
+    "recommender",
 ]
 
 MIDDLEWARE = [
