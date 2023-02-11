@@ -87,6 +87,8 @@ def get_recommendations(title, description, skills):
 
     # Add the similarity percentage scores to the results dataframe
     results = results.copy()
-    results["similarity_scores"] = similarity_scores * 100
+    similarity_scores *= 100
+    similarity_scores = [round(score, 2) for score in similarity_scores]
+    results["similarity_scores"] = similarity_scores
 
     return results

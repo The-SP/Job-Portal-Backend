@@ -47,6 +47,7 @@ class SeekerProfile(models.Model):
     github = models.URLField(max_length=200, null=True, blank=True)
     linkedin = models.URLField(max_length=200, null=True, blank=True)
     website = models.URLField(max_length=200, null=True, blank=True)
+    job_title = models.CharField(max_length=100, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
 
