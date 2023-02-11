@@ -4,24 +4,24 @@ from user_system.models import UserAccount
 
 
 JOB_LEVEL_CHOICES = (
-    ("entry", "Entry"),
-    ("intern", "Intern"),
-    ("mid", "Mid"),
-    ("senior", "Senior"),
+    ("Entry", "Entry"),
+    ("Intern", "Intern"),
+    ("Mid", "Mid"),
+    ("Senior", "Senior"),
 )
 
 EMPLOYMENT_TYPE_CHOICES = (
-    ("full-time", "Full-time"),
-    ("part-time", "Part-time"),
-    ("contract", "Contract"),
-    ("intern", "Intern"),
-    ("freelance", "Freelance"),
+    ("Full-time", "Full-time"),
+    ("Part-time", "Part-time"),
+    ("Contract", "Contract"),
+    ("Intern", "Intern"),
+    ("Freelance", "Freelance"),
 )
 
 JOB_NATURE_CHOICES = (
-    ("remote", "Remote"),
-    ("work-from-home", "Work-from-home"),
-    ("office", "Office"),
+    ("Remote", "Remote"),
+    ("Work-from-home", "Work-from-home"),
+    ("Office", "Office"),
 )
 
 
