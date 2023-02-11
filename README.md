@@ -62,9 +62,13 @@ The available commands are:
 3. ### create_jobs
     Creates instances of Job model with random meaningful values.
 
+4. ### create_applications
+    Creates instances of JobApplication model for a particular job. (Change JOB_ID to choose job)
+
 ### Run above commands
 ```bash
 python manage.py create_users
 python manage.py create_employer
 python manage.py create_jobs
+python manage.py create_applications
 ```

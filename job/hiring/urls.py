@@ -26,7 +26,7 @@ urlpatterns = [
     ),
     path(
         "user-applications/",
-        UserApplicationListView.as_view(),
+        SeekerApplicationListView.as_view(),
         name="user-application-list",
     ),
     path(

@@ -14,4 +14,9 @@ urlpatterns = [
         CompanyProfileView.as_view(),
         name="company-profile",
     ),
+    path(
+        "profile/seeker/<int:pk>/",
+        ApplicantProfileView.as_view(),
+        name="applicant-profile",
+    ),
 ]

@@ -35,3 +35,9 @@ class EmployerProfileView(generics.RetrieveUpdateAPIView):
 class CompanyProfileView(generics.RetrieveAPIView):
     queryset = EmployerProfile.objects.all()
     serializer_class = EmployerProfileSerializer
+
+
+# Allow employers to view seeker(applicant) details
+class ApplicantProfileView(generics.RetrieveAPIView):
+    queryset = SeekerProfile.objects.all()
+    serializer_class = SeekerProfileSerializer

@@ -8,7 +8,7 @@ from .serializers import *
 
 # List all jobs with few info to all users (no login required)
 class JobListView(generics.ListAPIView):
-    queryset = Job.objects.all().order_by('-created_at')
+    queryset = Job.objects.all().order_by("-created_at")
     serializer_class = ShortJobSerializer
 
 
@@ -24,7 +24,7 @@ class EmployerJobListView(generics.ListAPIView):
     permission_classes = [IsEmployer]
 
     def get_queryset(self):
-        return Job.objects.filter(posted_by=self.request.user).order_by('-created_at')
+        return Job.objects.filter(posted_by=self.request.user).order_by("-created_at")
 
 
 # Allow only employer user to create new jobs
@@ -85,18 +85,26 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer.save(user=self.request.user)
 
 
-class UserApplicationListView(generics.ListAPIView):
+# Get all jobs applied by the Seeker
+class SeekerApplicationListView(generics.ListAPIView):
     permission_classes = [IsSeeker]
-    serializer_class = JobApplicationSerializer
+    serializer_class = ShortJobSerializer
 
     def get_queryset(self):
-        return self.request.user.applications.all().order_by('-created_at')
+        seeker_applications = self.request.user.applications.all().order_by(
+            "-created_at"
+        )
+        applied_jobs = Job.objects.filter(applications__in=seeker_applications)
+        return applied_jobs
 
 
+# Get all job applications for a particular job
 class GetApplicationsForJob(generics.ListAPIView):
     permission_classes = [IsEmployer]
-    serializer_class = JobApplicationSerializer
+    serializer_class = GetApplicationsForJobSerializer
 
     def get_queryset(self):
         job_id = self.kwargs["job_id"]
-        return JobApplication.objects.filter(job_id=job_id, job__posted_by=self.request.user)
+        return JobApplication.objects.filter(
+            job_id=job_id, job__posted_by=self.request.user
+        )

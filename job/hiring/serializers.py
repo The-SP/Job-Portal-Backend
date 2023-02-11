@@ -91,10 +91,18 @@ class ScrapedJobSerializer(serializers.Serializer):
 """ Serializer for Job Application """
 
 
-class JobApplicationSerializer(serializers.ModelSerializer):
+class GetApplicationsForJobSerializer(serializers.ModelSerializer):
+    seeker_id = serializers.SerializerMethodField()
+    job_title = serializers.SerializerMethodField()
     class Meta:
         model = JobApplication
         fields = "__all__"
+
+    def get_seeker_id(self, application_obj):
+        return application_obj.user.id
+
+    def get_job_title(self, application_obj):
+        return application_obj.job.title
 
 
 class CreateJobApplicationSerializer(serializers.ModelSerializer):
