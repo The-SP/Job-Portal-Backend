@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "resume",
     "hiring",
     "recommender",
+    "populate_db",
 ]
 
 MIDDLEWARE = [
