@@ -50,7 +50,7 @@ def get_recommendations(title, description, skills):
     # Compute cosine similarity For input 'description'
     # Add skills and title value to description also
     if skills:
-        description = " ".join(skills) + " " + description
+        description = f'{skills} {description}'
     if title:
         description = f"{title} {description}"
     description = clean_job_description(description)
@@ -60,7 +60,6 @@ def get_recommendations(title, description, skills):
     )
 
     # Compute cosine similarity for skills
-    skills = ", ".join(skills)
     query_skills_vec = skills_vectorizer.transform([skills])
     cosine_sim_skills = cosine_similarity(query_skills_vec, skills_matrix)
 

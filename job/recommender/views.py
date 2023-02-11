@@ -14,7 +14,7 @@ class JobRecommendationsList(generics.GenericAPIView):
 
         input_title = seeker.job_title if seeker.job_title else ""
         input_description = seeker.bio if seeker.bio else ""
-        input_skills = ["python", "javascript"]
+        input_skills = seeker.skills if seeker.skills else ""
         recommended_jobs = get_recommendations(
             input_title, input_description, input_skills
         )
