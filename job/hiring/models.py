@@ -46,8 +46,7 @@ class Job(models.Model):
     skill_required = models.TextField(null=True, blank=True)
 
     """ Additional Description """
-    tasks = models.TextField(null=True, blank=True)
-    perks_and_benefits = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     """ Company """
     posted_by = models.ForeignKey(
