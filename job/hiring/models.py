@@ -67,7 +67,7 @@ class JobApplication(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField()
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-    cover_letter = models.TextField(blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
