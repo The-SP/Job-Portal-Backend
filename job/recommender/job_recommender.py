@@ -20,47 +20,52 @@ def clean_job_description(text):
     return text
 
 
+# Remove ',' and convert to lowercase
+def clean_skill(skill):
+    return skill.replace(",", "").lower()
+
+
+df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
+
+# Clean jobtitle, jobdescription and skills
+df_clean_title = df_jobs["jobtitle"].apply(clean_job_title)
+df_clean_description = df_jobs["jobdescription"].apply(clean_job_description)
+df_clean_skills = df_jobs["skills"].apply(clean_skill)
+
+# Initialize the TfidfVectorizer
+title_vectorizer = CountVectorizer()
+description_vectorizer = TfidfVectorizer(stop_words="english")
+skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
+
+
+# fit_transform the vectorizers and create tfidf matrix
+title_matrix = title_vectorizer.fit_transform(df_clean_title)
+description_matrix = description_vectorizer.fit_transform(df_clean_description)
+skills_matrix = skills_vectorizer.fit_transform(df_clean_skills)
+
+
 def get_recommendations(title, description, skills):
-    df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
-    # Clean jobtitle and jobdescription
-    df_clean_title = df_jobs["jobtitle"].apply(clean_job_title)
-    df_clean_description = df_jobs["jobdescription"].apply(clean_job_description)
-
-    # Preprocess job description column and create tfidf matrix
-    description_vectorizer = TfidfVectorizer(stop_words="english")
-    # Convert to lower case and fit_transform
-    description_matrix = description_vectorizer.fit_transform(df_clean_description)
-
-    # Preprocess job title and create CountVectorizer
-    title_vectorizer = CountVectorizer()
-    title_matrix = title_vectorizer.fit_transform(df_clean_title)
-
-    skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
-    # Convert the skills column to a list of strings
-    skills_list = df_jobs["skills"].apply(lambda x: "".join(x.lower())).tolist()
-    # Fit the vectorizer on the list of strings
-    skills_matrix = skills_vectorizer.fit_transform(skills_list)
-
-    # Compute cosine similarity
+    # Clean input title
     title = clean_job_title(title)
-    # For input 'title'
-    query_title_vec = title_vectorizer.transform([title])
-    cosine_sim_title = cosine_similarity(query_title_vec, title_matrix)
-
-    # Compute cosine similarity For input 'description'
-    # Add skills and title value to description also
+    # Clean input description
     if skills:
-        description = f'{skills} {description}'
+        description = " ".join(skills) + " " + description
     if title:
         description = f"{title} {description}"
     description = clean_job_description(description)
+    # Clean input skills
+    skills = clean_skill(skills)
+
+    # Compute vectorizer
+    query_title_vec = title_vectorizer.transform([title])
     query_description_vec = description_vectorizer.transform([description])
+    query_skills_vec = skills_vectorizer.transform([skills])
+
+    # Compute cosine similarity
+    cosine_sim_title = cosine_similarity(query_title_vec, title_matrix)
     cosine_sim_description = cosine_similarity(
         query_description_vec, description_matrix
     )
-
-    # Compute cosine similarity for skills
-    query_skills_vec = skills_vectorizer.transform([skills])
     cosine_sim_skills = cosine_similarity(query_skills_vec, skills_matrix)
 
     # Combine the cosine similarity scores for job title and job description
