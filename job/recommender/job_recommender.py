@@ -6,6 +6,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+from hiring.models import Job
+from user_system.models import EmployerProfile
+
 
 # Title should contain only characters, spaces and '+' (for C++)
 def clean_job_title(title):
@@ -25,12 +28,20 @@ def clean_skill(skill):
     return skill.replace(",", "").lower()
 
 
-df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
+# df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
+
+# get all the jobs as a queryset from the database
+jobs_qs = Job.objects.all()
+# convert the queryset to a list
+jobs_list = list(jobs_qs.values())
+# convert the list of jobs to a pandas dataframe
+df_jobs = pd.DataFrame.from_records(jobs_list)
+
 
 # Clean jobtitle, jobdescription and skills
-df_clean_title = df_jobs["jobtitle"].apply(clean_job_title)
-df_clean_description = df_jobs["jobdescription"].apply(clean_job_description)
-df_clean_skills = df_jobs["skills"].apply(clean_skill)
+df_clean_title = df_jobs["title"].apply(clean_job_title)
+df_clean_description = df_jobs["description"].apply(clean_job_description)
+df_clean_skills = df_jobs["skill_required"].apply(clean_skill)
 
 # Initialize the TfidfVectorizer
 title_vectorizer = CountVectorizer()
@@ -94,5 +105,9 @@ def get_recommendations(title, description, skills):
     similarity_scores *= 100
     similarity_scores = [round(score, 2) for score in similarity_scores]
     results["similarity_scores"] = similarity_scores
+    results["company"] = results.apply(
+        lambda x: EmployerProfile.objects.get(user=x["posted_by_id"]).company_name,
+        axis=1,
+    )
 
     return results

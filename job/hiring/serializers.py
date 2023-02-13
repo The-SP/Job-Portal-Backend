@@ -38,6 +38,7 @@ class ShortJobSerializer(serializers.ModelSerializer):
             "deadline",
             "posted_by",
             "company",
+            "skill_required",
             "deadline_remaining",
         )
 

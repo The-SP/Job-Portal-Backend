@@ -1,6 +1,7 @@
 import pandas as pd
 import ast
 from rest_framework import generics
+from rest_framework.pagination import LimitOffsetPagination
 
 from user_system.permissions import IsEmployer, IsJobOwner, IsSeeker, IsApplicationOwner
 from .models import *
@@ -8,8 +9,12 @@ from .serializers import *
 
 # List all jobs with few info to all users (no login required)
 class JobListView(generics.ListAPIView):
-    queryset = Job.objects.all().order_by("-created_at")
+    queryset = Job.objects.all().order_by("-created_at")[:100]
     serializer_class = ShortJobSerializer
+
+    # With this setup, you can specify the number of jobs you want to return in the API request by passing the limit parameter. For example, if you want to return the first 100 jobs, you would make a request to /jobs/?limit=100. If you don't specify the limit parameter, the default value of 100 will be used.
+    # pagination_class = LimitOffsetPagination
+    # pagination_class.default_limit = 100
 
 
 # This view will handle retrieving a single job based on the primary key passed in the URL.
