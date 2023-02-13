@@ -1,4 +1,11 @@
-# Django REST + React
+# Hire Nepal
+A Job Portal website for finding your dream job in Nepal.
+
+## Features
+- Job Listings: Browse through the latest job postings from top companies in Nepal.
+- Job Recommendations: Get personalized job recommendations based on your profile and preferences.
+- Easy Apply: Apply for a job with just a few clicks.
+- Employer Dashboard: Manage your job postings and applicants from a single platform.
 
 ## Project Setup
 
@@ -27,17 +34,6 @@ py manage.py runserver
 npm start
 ```
 
-## DJOSER API Endpoints
-
-This project uses Djoser package to handle authentication in backend.
-
-- auth/users/ => create user
-- auth/jwt/create/ => login user
-- auth/jwt/refresh/ => get new access token
-- auth/users/reset_password/
-- auth/users/reset_password_confirm/
-
-
 ## Setup .env inside job/
 ```bash
 EMAIL_HOST_USER=
@@ -45,6 +41,14 @@ EMAIL_HOST_PASSWORD=
 DOMAIN=localhost:3000
 SITE_NAME=Frontend
 ```
+
+## Recommendation System Setup
+- Download the original dataset from 'https://www.kaggle.com/datasets/PromptCloudHQ/us-technology-jobs-on-dicecom'. (Save it inside 'Recommendation System' folder)
+
+- Then run `filter_csv.ipynb`
+    - This creates `jobs_data.csv` file which is used by the backed.
+
+- Also, You can experiment with the recommender by running 'job_recommender.ipynb'
 
 ## Populating Database
 
