@@ -1,6 +1,7 @@
 import pandas as pd
 import ast
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.pagination import LimitOffsetPagination
 
 from user_system.permissions import IsEmployer, IsJobOwner, IsSeeker, IsApplicationOwner
@@ -29,7 +30,7 @@ class EmployerJobListView(generics.ListAPIView):
     permission_classes = [IsEmployer]
 
     def get_queryset(self):
-        return Job.objects.filter(posted_by=self.request.user).order_by("-created_at")
+        return Job.objects.filter(posted_by=self.request.user).order_by("-created_at")[:50]
 
 
 # Allow only employer user to create new jobs
@@ -72,6 +73,7 @@ class ScrapedJobListView(generics.ListAPIView):
 
 
 class ApplicationCreateView(generics.CreateAPIView):
+    parser_classes = [MultiPartParser, FormParser] # for image/file upload
     permission_classes = [IsSeeker]
     queryset = JobApplication.objects.all()
     serializer_class = CreateJobApplicationSerializer
@@ -93,13 +95,13 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
 # Get all jobs applied by the Seeker
 class SeekerApplicationListView(generics.ListAPIView):
     permission_classes = [IsSeeker]
-    serializer_class = ShortJobSerializer
+    serializer_class = SeekerApplicationsListSerializer
 
     def get_queryset(self):
-        seeker_applications = self.request.user.applications.all().order_by(
-            "-created_at"
+        seeker_applications = self.request.user.applications.all()
+        applied_jobs = Job.objects.filter(applications__in=seeker_applications).order_by(
+            "-applications__created_at"
         )
-        applied_jobs = Job.objects.filter(applications__in=seeker_applications)
         return applied_jobs
 
 

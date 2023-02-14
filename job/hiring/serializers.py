@@ -7,24 +7,15 @@ from user_system.serializers import EmployerProfileSerializer
 
 
 class JobSerializer(serializers.ModelSerializer):
-    company = EmployerProfileSerializer(read_only=True)
+    company = EmployerProfileSerializer(source='posted_by.company')
 
     class Meta:
         model = Job
         fields = "__all__"
 
-    # Get the details of Company
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        # Get the profile from posted_by then add it to the JobSerializer data
-        representation["company"] = EmployerProfileSerializer(
-            EmployerProfile.objects.get(user=instance.posted_by)
-        ).data
-        return representation
-
 
 class ShortJobSerializer(serializers.ModelSerializer):
-    company = serializers.SerializerMethodField()
+    company = serializers.CharField(source='posted_by.company.company_name')
     deadline_remaining = serializers.SerializerMethodField()
 
     class Meta:
@@ -41,11 +32,6 @@ class ShortJobSerializer(serializers.ModelSerializer):
             "skill_required",
             "deadline_remaining",
         )
-
-    # Get the name of Company
-    def get_company(self, job_obj):
-        company = EmployerProfile.objects.get(user=job_obj.posted_by)
-        return company.company_name
 
     # Get deadline in terms of 'x week, y days'
     def get_deadline_remaining(self, obj):
@@ -94,16 +80,14 @@ class ScrapedJobSerializer(serializers.Serializer):
 
 class GetApplicationsForJobSerializer(serializers.ModelSerializer):
     seeker_id = serializers.SerializerMethodField()
-    job_title = serializers.SerializerMethodField()
+    job_title = serializers.CharField(source='job.title')
+
     class Meta:
         model = JobApplication
         fields = "__all__"
 
     def get_seeker_id(self, application_obj):
         return application_obj.user.id
-
-    def get_job_title(self, application_obj):
-        return application_obj.job.title
 
 
 class CreateJobApplicationSerializer(serializers.ModelSerializer):
@@ -112,3 +96,11 @@ class CreateJobApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApplication
         fields = "__all__"
+
+
+class SeekerApplicationsListSerializer(serializers.ModelSerializer):
+    company = serializers.CharField(source='posted_by.company.company_name')
+
+    class Meta:
+        model = Job
+        fields = ["id", "title", "deadline", "posted_by", "company"]

@@ -35,7 +35,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
 
 class SeekerProfile(models.Model):
-    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True, related_name='seeker_profile')
     # avatar = models.ImageField(
     #     max_length=255, upload_to="profile_images/", null=True, blank=True
     # )
@@ -57,7 +57,7 @@ class SeekerProfile(models.Model):
 
 
 class EmployerProfile(models.Model):
-    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(UserAccount, on_delete=models.CASCADE, primary_key=True, related_name='company')
     company_name = models.CharField(max_length=100)
     company_location = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)

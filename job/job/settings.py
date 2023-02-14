@@ -152,12 +152,14 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticatedOrReadOnly"],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     # API Generator
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
@@ -203,11 +205,15 @@ DJOSER = {
 AUTH_USER_MODEL = "user_system.UserAccount"
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Job Portal API',
+    "TITLE": "Job Portal API",
     # 'DESCRIPTION': 'Your project description',
     # 'VERSION': '1.0.0',
     # 'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
 
-TIME_ZONE = 'Asia/Katmandu'
+TIME_ZONE = "Asia/Katmandu"
+
+# For File Upload
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
