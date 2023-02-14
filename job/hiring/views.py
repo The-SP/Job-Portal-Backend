@@ -98,11 +98,7 @@ class SeekerApplicationListView(generics.ListAPIView):
     serializer_class = SeekerApplicationsListSerializer
 
     def get_queryset(self):
-        seeker_applications = self.request.user.applications.all()
-        applied_jobs = Job.objects.filter(applications__in=seeker_applications).order_by(
-            "-applications__created_at"
-        )
-        return applied_jobs
+        return JobApplication.objects.filter(user=self.request.user).order_by('-created_at')
 
 
 # Get all job applications for a particular job

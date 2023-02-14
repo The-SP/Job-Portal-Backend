@@ -7,7 +7,7 @@ from user_system.serializers import EmployerProfileSerializer
 
 
 class JobSerializer(serializers.ModelSerializer):
-    company = EmployerProfileSerializer(source='posted_by.company')
+    company = EmployerProfileSerializer(source="posted_by.company")
 
     class Meta:
         model = Job
@@ -15,7 +15,7 @@ class JobSerializer(serializers.ModelSerializer):
 
 
 class ShortJobSerializer(serializers.ModelSerializer):
-    company = serializers.CharField(source='posted_by.company.company_name')
+    company = serializers.CharField(source="posted_by.company.company_name")
     deadline_remaining = serializers.SerializerMethodField()
 
     class Meta:
@@ -79,15 +79,12 @@ class ScrapedJobSerializer(serializers.Serializer):
 
 
 class GetApplicationsForJobSerializer(serializers.ModelSerializer):
-    seeker_id = serializers.SerializerMethodField()
-    job_title = serializers.CharField(source='job.title')
+    seeker_id = serializers.PrimaryKeyRelatedField(source="user.id", read_only=True)
+    job_title = serializers.CharField(source="job.title")
 
     class Meta:
         model = JobApplication
         fields = "__all__"
-
-    def get_seeker_id(self, application_obj):
-        return application_obj.user.id
 
 
 class CreateJobApplicationSerializer(serializers.ModelSerializer):
@@ -99,8 +96,21 @@ class CreateJobApplicationSerializer(serializers.ModelSerializer):
 
 
 class SeekerApplicationsListSerializer(serializers.ModelSerializer):
-    company = serializers.CharField(source='posted_by.company.company_name')
+    job_id = serializers.PrimaryKeyRelatedField(source="job.id", read_only=True)
+    job_title = serializers.CharField(source="job.title")
+    posted_by = serializers.PrimaryKeyRelatedField(
+        source="job.posted_by", read_only=True
+    )
+    company = serializers.CharField(source="job.posted_by.company.company_name")
 
     class Meta:
-        model = Job
-        fields = ["id", "title", "deadline", "posted_by", "company"]
+        model = JobApplication
+        fields = [
+            "job_id",
+            "job_title",
+            "posted_by",
+            "company",
+            "id",
+            "created_at",
+            "resume",
+        ]
