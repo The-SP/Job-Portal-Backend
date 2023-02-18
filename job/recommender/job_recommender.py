@@ -34,28 +34,34 @@ def clean_skill(skill):
 jobs_qs = Job.objects.all()
 # convert the queryset to a list
 jobs_list = list(jobs_qs.values())
-# convert the list of jobs to a pandas dataframe
-df_jobs = pd.DataFrame.from_records(jobs_list)
+
+df_jobs = pd.DataFrame() # Initialize empty dataframe first
+if jobs_list:
+    # convert the list of jobs to a pandas dataframe
+    df_jobs = pd.DataFrame.from_records(jobs_list)
+
+    # Clean jobtitle, jobdescription and skills
+    df_clean_title = df_jobs["title"].apply(clean_job_title)
+    df_clean_description = df_jobs["description"].apply(clean_job_description)
+    df_clean_skills = df_jobs["skill_required"].apply(clean_skill)
+
+    # Initialize the TfidfVectorizer
+    title_vectorizer = CountVectorizer()
+    description_vectorizer = TfidfVectorizer(stop_words="english")
+    skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
 
 
-# Clean jobtitle, jobdescription and skills
-df_clean_title = df_jobs["title"].apply(clean_job_title)
-df_clean_description = df_jobs["description"].apply(clean_job_description)
-df_clean_skills = df_jobs["skill_required"].apply(clean_skill)
-
-# Initialize the TfidfVectorizer
-title_vectorizer = CountVectorizer()
-description_vectorizer = TfidfVectorizer(stop_words="english")
-skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
-
-
-# fit_transform the vectorizers and create tfidf matrix
-title_matrix = title_vectorizer.fit_transform(df_clean_title)
-description_matrix = description_vectorizer.fit_transform(df_clean_description)
-skills_matrix = skills_vectorizer.fit_transform(df_clean_skills)
+    # fit_transform the vectorizers and create tfidf matrix
+    title_matrix = title_vectorizer.fit_transform(df_clean_title)
+    description_matrix = description_vectorizer.fit_transform(df_clean_description)
+    skills_matrix = skills_vectorizer.fit_transform(df_clean_skills)
 
 
 def get_recommendations(title, description, skills):
+    # If no records don't do processing
+    if df_jobs.empty:
+        return df_jobs
+
     # Clean input title
     title = clean_job_title(title)
     # Clean input description
