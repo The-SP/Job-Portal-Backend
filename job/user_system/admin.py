@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import SeekerProfile, EmployerProfile, UserAccount
 
-# Register your models here.
+admin.site.register(UserAccount)
+admin.site.register(SeekerProfile)
+admin.site.register(EmployerProfile)
