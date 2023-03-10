@@ -43,3 +43,19 @@ python manage.py create_jobs
 python manage.py create_applications
 python manage.py create_jobs_from_csv
 ```
+
+
+## Migrating to PostgreSQL
+```bash
+# Dump / Backup existing database
+py manage.py dumpdata > datadump.json
+
+# Install PostgreSQL and pgAdmin
+
+pip install psycopg2
+
+# Comment out recommender in INSTALLED_APPS, and urls first
+py manage.py migrate --run-syncdb
+
+py maage.py loaddata datadump.json
+```
