@@ -57,5 +57,5 @@ pip install psycopg2
 # Comment out recommender in INSTALLED_APPS, and urls first
 py manage.py migrate --run-syncdb
 
-py maage.py loaddata datadump.json
+py manage.py loaddata datadump.json
 ```
