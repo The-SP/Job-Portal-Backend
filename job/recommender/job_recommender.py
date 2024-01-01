@@ -1,31 +1,20 @@
 import pandas as pd
 import numpy as np
-import re
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 from hiring.models import Job
 from user_system.models import EmployerProfile
 
-
-# Title should contain only characters, spaces and '+' (for C++)
-def clean_job_title(title):
-    return re.sub(r"[^a-zA-Z\s\+]", " ", title).lower()
-
-
-def clean_job_description(text):
-    # Remove punctuation and numbers
-    text = re.sub("[^a-zA-Z]", " ", text)
-    # Convert to lowercase
-    text = text.lower()
-    return text
-
-
-# Remove ',' and convert to lowercase
-def clean_skill(skill):
-    return skill.replace(",", "").lower()
+from recommender.utils import (
+    clean_job_title,
+    clean_job_description,
+    clean_skill,
+    clean_text,
+    compute_vectorizer_similarity,
+    compute_weighted_similarity_score,
+)
 
 
 # df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
@@ -35,26 +24,33 @@ jobs_qs = Job.objects.all()
 # convert the queryset to a list
 jobs_list = list(jobs_qs.values())
 
-df_jobs = pd.DataFrame() # Initialize empty dataframe first
+df_jobs = pd.DataFrame()  # Initialize empty dataframe first
 if jobs_list:
     # convert the list of jobs to a pandas dataframe
     df_jobs = pd.DataFrame.from_records(jobs_list)
 
     # Clean jobtitle, jobdescription and skills
+    print("Cleaning job titles, job descriptions, and skills...")
+
     df_clean_title = df_jobs["title"].apply(clean_job_title)
     df_clean_description = df_jobs["description"].apply(clean_job_description)
     df_clean_skills = df_jobs["skill_required"].apply(clean_skill)
 
     # Initialize the TfidfVectorizer
     title_vectorizer = CountVectorizer()
-    description_vectorizer = TfidfVectorizer(stop_words="english")
+    description_vectorizer = TfidfVectorizer(stop_words="english", min_df=0.01)
     skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
 
+    print("Creating vector representations for job titles, descriptions, and skills...")
 
     # fit_transform the vectorizers and create tfidf matrix
     title_matrix = title_vectorizer.fit_transform(df_clean_title)
     description_matrix = description_vectorizer.fit_transform(df_clean_description)
     skills_matrix = skills_vectorizer.fit_transform(df_clean_skills)
+
+    print(
+        "Vector representations successfully created for job titles, descriptions, and skills."
+    )
 
 
 def get_recommendations(title, description, skills):
@@ -62,52 +58,35 @@ def get_recommendations(title, description, skills):
     if df_jobs.empty:
         return df_jobs
 
-    # Clean input title
-    title = clean_job_title(title)
-    # Clean input description
-    if skills:
-        description = " ".join(skills) + " " + description
-    if title:
-        description = f"{title} {description}"
-    description = clean_job_description(description)
-    # Clean input skills
-    skills = clean_skill(skills)
+    title, description, skills = clean_text(title, description, skills)
 
-    # Compute vectorizer
-    query_title_vec = title_vectorizer.transform([title])
-    query_description_vec = description_vectorizer.transform([description])
-    query_skills_vec = skills_vectorizer.transform([skills])
-
-    # Compute cosine similarity
-    cosine_sim_title = cosine_similarity(query_title_vec, title_matrix)
-    cosine_sim_description = cosine_similarity(
-        query_description_vec, description_matrix
+    # Compute vectorizer and cosine similarity scores for job title, job description and skills
+    cosine_sim_title = compute_vectorizer_similarity(
+        title, title_vectorizer, title_matrix
     )
-    cosine_sim_skills = cosine_similarity(query_skills_vec, skills_matrix)
+    cosine_sim_description = compute_vectorizer_similarity(
+        description, description_vectorizer, description_matrix
+    )
+    cosine_sim_skills = compute_vectorizer_similarity(
+        skills, skills_vectorizer, skills_matrix
+    )
 
-    # Combine the cosine similarity scores for job title and job description
-    weight_title = 0.4
-    weight_description = 0.2
-    weight_skills = 0.4
-    cosine_sim_input = (
-        weight_title * cosine_sim_title
-        + weight_description * cosine_sim_description
-        + weight_skills * cosine_sim_skills
+    # Combine the cosine similarity scores
+    cosine_sim_input = compute_weighted_similarity_score(
+        cosine_sim_title, cosine_sim_description, cosine_sim_skills
     )
 
     # Find the indices of the top N jobs with the highest cosine similarity scores
     N = 20
     top_n_indices = np.argsort(-cosine_sim_input[0])[:N]
 
-    # Get the similarity scores of the recommended jobs
-    similarity_scores = cosine_sim_input[0][top_n_indices]
-    # print("Similarity Scores:", similarity_scores)
-
     # Return the top N jobs with the highest cosine similarity scores
     results = df_jobs.iloc[top_n_indices]
 
     # Add the similarity percentage scores to the results dataframe
     results = results.copy()
+    # Get the similarity scores of the recommended jobs
+    similarity_scores = cosine_sim_input[0][top_n_indices]
     similarity_scores *= 100
     similarity_scores = [round(score, 2) for score in similarity_scores]
     results["similarity_scores"] = similarity_scores
