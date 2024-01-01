@@ -31,7 +31,15 @@ The available commands are:
 
    Creates instances of Job model with random meaningful values.
 
-4. ### create_applications
+4. ### create_jobs_from_csv
+
+   Populate the Job model with 20K datasets from csv (https://www.kaggle.com/datasets/PromptCloudHQ/us-technology-jobs-on-dicecom)
+
+5. ### update_jobs_deadline
+
+   Update the deadline field for existing Job objects using bulk update
+
+6. ### create_applications
    Creates instances of JobApplication model for a particular job. (Change JOB_ID to choose job)
 
 ### Run above commands
@@ -42,10 +50,11 @@ python manage.py create_employer
 python manage.py create_jobs
 python manage.py create_applications
 python manage.py create_jobs_from_csv
+python manage.py update_jobs_deadline
 ```
 
-
 ## Migrating to PostgreSQL
+
 ```bash
 # Dump / Backup existing database
 py manage.py dumpdata > datadump.json
@@ -59,3 +68,10 @@ py manage.py migrate --run-syncdb
 
 py manage.py loaddata datadump.json
 ```
+
+## Running scrapper/scrapper.py
+```bash
+# Run below command from backend/job
+py scrapper/scrapper.py
+```
+- It scrapes IT related jobs from merojob.com website and stores in csv file.
