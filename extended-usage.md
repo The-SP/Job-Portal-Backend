@@ -40,7 +40,12 @@ The available commands are:
    Update the deadline field for existing Job objects using bulk update
 
 6. ### create_applications
+
    Creates instances of JobApplication model for a particular job. (Change JOB_ID to choose job)
+
+7. ### update_recommendations
+  -  Update recommendations and save vectorizer, matrices and df_jobs in a pickle file
+  - This creates `recommendation_data.pkl` inside `job/recommender`
 
 ### Run above commands
 
@@ -51,6 +56,7 @@ python manage.py create_jobs
 python manage.py create_applications
 python manage.py create_jobs_from_csv
 python manage.py update_jobs_deadline
+python manage.py update_recommendations
 ```
 
 ## Migrating to PostgreSQL
@@ -70,8 +76,10 @@ py manage.py loaddata datadump.json
 ```
 
 ## Running scrapper/scrapper.py
+
 ```bash
 # Run below command from backend/job
 py scrapper/scrapper.py
 ```
+
 - It scrapes IT related jobs from merojob.com website and stores in csv file.

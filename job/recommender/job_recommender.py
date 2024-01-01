@@ -1,59 +1,37 @@
 import pandas as pd
 import numpy as np
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.feature_extraction.text import CountVectorizer
+import pickle
 
 from hiring.models import Job
 from user_system.models import EmployerProfile
 
 from recommender.utils import (
-    clean_job_title,
-    clean_job_description,
-    clean_skill,
     clean_text,
     compute_vectorizer_similarity,
     compute_weighted_similarity_score,
 )
 
 
-# df_jobs = pd.read_csv("../Recommendation System/jobs_data.csv")
-
-# get all the jobs as a queryset from the database
-jobs_qs = Job.objects.all()
-# convert the queryset to a list
-jobs_list = list(jobs_qs.values())
-
-df_jobs = pd.DataFrame()  # Initialize empty dataframe first
-if jobs_list:
-    # convert the list of jobs to a pandas dataframe
-    df_jobs = pd.DataFrame.from_records(jobs_list)
-
-    # Clean jobtitle, jobdescription and skills
-    print("Cleaning job titles, job descriptions, and skills...")
-
-    df_clean_title = df_jobs["title"].apply(clean_job_title)
-    df_clean_description = df_jobs["description"].apply(clean_job_description)
-    df_clean_skills = df_jobs["skill_required"].apply(clean_skill)
-
-    # Initialize the TfidfVectorizer
-    title_vectorizer = CountVectorizer()
-    description_vectorizer = TfidfVectorizer(stop_words="english", min_df=0.01)
-    skills_vectorizer = CountVectorizer(ngram_range=(1, 3))
-
-    print("Creating vector representations for job titles, descriptions, and skills...")
-
-    # fit_transform the vectorizers and create tfidf matrix
-    title_matrix = title_vectorizer.fit_transform(df_clean_title)
-    description_matrix = description_vectorizer.fit_transform(df_clean_description)
-    skills_matrix = skills_vectorizer.fit_transform(df_clean_skills)
-
-    print(
-        "Vector representations successfully created for job titles, descriptions, and skills."
-    )
-
-
 def get_recommendations(title, description, skills):
+    # Load vectorizer and matrices from pickle file
+    try:
+        with open("recommender/recommendation_data.pkl", "rb") as f:
+            data = pickle.load(f)
+            title_vectorizer = data["title_vectorizer"]
+            description_vectorizer = data["description_vectorizer"]
+            skills_vectorizer = data["skills_vectorizer"]
+            title_matrix = data["title_matrix"]
+            description_matrix = data["description_matrix"]
+            skills_matrix = data["skills_matrix"]
+            df_jobs = data.get("df_jobs", pd.DataFrame())
+
+        print("Vectorizer and matrices loaded from recommendation_data.pkl.")
+    except FileNotFoundError:
+        print(
+            "Pickle file not found. Run the update_recommendations management command first."
+        )
+        exit()
+
     # If no records don't do processing
     if df_jobs.empty:
         return df_jobs
@@ -94,5 +72,18 @@ def get_recommendations(title, description, skills):
         lambda x: EmployerProfile.objects.get(user=x["posted_by_id"]).company_name,
         axis=1,
     )
+
+    # Get the job IDs from the top N indices
+    top_n_job_ids = results["id"].tolist()
+
+    # Filter the top_n_job_ids to only include IDs that exist in Job.objects
+    # This is needed because the pickle file may contain some deleted jobs
+    existing_job_ids = Job.objects.values_list("id", flat=True)
+    valid_top_n_job_ids = [
+        job_id for job_id in top_n_job_ids if job_id in existing_job_ids
+    ]
+
+    # Filter the results to only include rows with job IDs that exist in Job.objects
+    results = results[results["id"].isin(valid_top_n_job_ids)]
 
     return results
