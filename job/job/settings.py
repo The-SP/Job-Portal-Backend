@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "user_system",
-    "resume",
+    # "resume",
     "hiring",
     "recommender",
     "populate_db",
