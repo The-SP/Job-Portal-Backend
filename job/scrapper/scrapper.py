@@ -6,13 +6,9 @@ def run_files():
     subprocess.run([sys.executable, 'scrapper/get_html.py'])
     # sys.executable to get the path of the current running python script executable, this way, you don't have to hardcode the path.
 
-    print("Extracting hamrodevjobs...")
-    print("CSV Generated Successfully\n")
-    subprocess.run([sys.executable, 'scrapper/hamrodevjobs.py'])
-
     print("Extracting merojob...")
-    print("CSV Generated Successfully\n")
     subprocess.run([sys.executable, 'scrapper/merojob.py'])
+    print("CSV Generated Successfully\n")
     print("Scraping complete.")
 
 if __name__ == "__main__":

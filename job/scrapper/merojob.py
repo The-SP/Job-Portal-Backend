@@ -62,4 +62,4 @@ for page in range(1, 5):
     get_jobs(f"merojob{page}.html")
 
 # Save the job_list to a csv file
-dict_to_csv(job_list, 'scrapper/jobs_csv/jobs2.csv')
+dict_to_csv(job_list, 'scrapper/jobs_csv/jobs.csv')

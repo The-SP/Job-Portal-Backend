@@ -8,6 +8,7 @@ from user_system.permissions import IsEmployer, IsJobOwner, IsSeeker, IsApplicat
 from .models import *
 from .serializers import *
 
+
 # List all jobs with few info to all users (no login required)
 class JobListView(generics.ListAPIView):
     queryset = Job.objects.all().order_by("-created_at")[:100]
@@ -30,7 +31,9 @@ class EmployerJobListView(generics.ListAPIView):
     permission_classes = [IsEmployer]
 
     def get_queryset(self):
-        return Job.objects.filter(posted_by=self.request.user).order_by("-created_at")[:50]
+        return Job.objects.filter(posted_by=self.request.user).order_by("-created_at")[
+            :50
+        ]
 
 
 # Allow only employer user to create new jobs
@@ -59,13 +62,11 @@ class ScrapedJobListView(generics.ListAPIView):
     serializer_class = ScrapedJobSerializer
 
     def get_queryset(self):
-        jobs1 = pd.read_csv("scrapper/jobs_csv/jobs1.csv")
-        jobs2 = pd.read_csv("scrapper/jobs_csv/jobs2.csv")
+        jobs = pd.read_csv("scrapper/jobs_csv/jobs.csv")
         # tags is stored as string so, convert back to list of string
-        jobs1["tags"] = jobs1["tags"].apply(lambda x: ast.literal_eval(x))
-        jobs2["tags"] = jobs2["tags"].apply(lambda x: ast.literal_eval(x))
+        jobs["tags"] = jobs["tags"].apply(lambda x: ast.literal_eval(x))
         # Convert pandas dataframe to list of dictionaries
-        jobs_list = jobs1.to_dict(orient="records") + jobs2.to_dict(orient="records")
+        jobs_list = jobs.to_dict(orient="records")
         return jobs_list
 
 
@@ -73,7 +74,7 @@ class ScrapedJobListView(generics.ListAPIView):
 
 
 class ApplicationCreateView(generics.CreateAPIView):
-    parser_classes = [MultiPartParser, FormParser] # for image/file upload
+    parser_classes = [MultiPartParser, FormParser]  # for image/file upload
     permission_classes = [IsSeeker]
     queryset = JobApplication.objects.all()
     serializer_class = CreateJobApplicationSerializer
@@ -98,7 +99,9 @@ class SeekerApplicationListView(generics.ListAPIView):
     serializer_class = SeekerApplicationsListSerializer
 
     def get_queryset(self):
-        return JobApplication.objects.filter(user=self.request.user).order_by('-created_at')
+        return JobApplication.objects.filter(user=self.request.user).order_by(
+            "-created_at"
+        )
 
 
 # Get all job applications for a particular job
