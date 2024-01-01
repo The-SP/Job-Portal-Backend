@@ -4,6 +4,8 @@ job/scrapper/html_source/
 # Recommendation System
 dice_com-job_us_sample.csv
 jobs_data.csv
+job_embeddings.pkl
+job_embeddings_1.pkl
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
