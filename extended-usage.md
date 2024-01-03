@@ -41,7 +41,7 @@ The available commands are:
 
 6. ### create_applications
 
-   Creates instances of JobApplication model for a particular job. (Change JOB_ID to choose job)
+   Creates instances of JobApplication model for a particular job. (Change JOB_ID to choose job and specify the resume_path)
 
 7. ### update_recommendations
   -  Update recommendations and save vectorizer, matrices and df_jobs in a pickle file
