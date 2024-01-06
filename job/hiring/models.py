@@ -71,5 +71,20 @@ class JobApplication(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
 
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('under_review', 'Under Review'),
+        ('shortlisted', 'Shortlisted'),
+        ('interview', 'Interview'),
+        ('rejected', 'Rejected'),
+        ('hired', 'Hired'),
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+    )
+
     def __str__(self):
         return f"Application for {self.job.title} by {self.user.name}"
