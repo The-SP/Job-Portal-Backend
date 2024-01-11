@@ -1,9 +1,11 @@
 from rest_framework import generics
 from rest_framework.response import Response
 
-from hiring.models import Job, JobApplication
-from hiring.serializers import GetApplicationsForJobSerializer
+from hiring.models import Job
 from user_system.permissions import IsEmployer
+
+from .ranking_algorithm.resume_parse import parse_resume_files
+from .ranking_algorithm.applicant_ranking import ranking_algorithm
 
 
 class ApplicantRankingView(generics.GenericAPIView):
@@ -14,5 +16,30 @@ class ApplicantRankingView(generics.GenericAPIView):
         job = Job.objects.get(pk=job_id)
         applicants = job.applications.all()
 
-        serializer = GetApplicationsForJobSerializer(applicants, many=True)
-        return Response(serializer.data)
+        weights = {
+            "description": 0.15,
+            "education": 0.2,
+            "experience": 0.35,
+            "skills": 0.2,
+            "projects": 0.1,
+        }
+
+        target_job = {
+            "title": job.title,
+            "description": job.description,
+            "skills": job.skill_required,
+            "education": job.education_level
+            + " in Computer Science",  # Fix the education field later
+            "experience": job.experience_required,
+        }
+
+        # resume.url gives '/media/job_19733_resumes/backend.pdf', so need to remove the starting '/' using lstrip('/')
+        resumes = [applicant.resume.url.lstrip("/") for applicant in applicants]
+
+        print('\nProcessing uploaded resumes to extract relevant information..."')
+        parse_resume_files(resumes)
+
+        print("\n\nEvaluating candidates...")
+        df_resume_rankings = ranking_algorithm(target_job, weights)
+
+        return Response(df_resume_rankings.to_dict(orient="records"))
