@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # "resume",
     "hiring",
     "recommender",
+    "resume_ranking",
     "populate_db",
 ]
 

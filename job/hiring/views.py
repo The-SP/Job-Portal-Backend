@@ -85,7 +85,7 @@ class ApplicationCreateView(generics.CreateAPIView):
 
 # Allow owner of the job-application to update and delete
 class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsSeeker, IsApplicationOwner]
+    # permission_classes = [IsSeeker, IsApplicationOwner]
     queryset = JobApplication.objects.all()
     serializer_class = CreateJobApplicationSerializer
 
