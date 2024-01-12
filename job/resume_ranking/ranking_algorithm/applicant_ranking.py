@@ -4,7 +4,7 @@ from .description_score import get_description_score
 from .skill_score import get_skills_score, get_projects_score
 from .education_score import get_education_score
 from .experience_score import get_experience_score
-from .total_score import calculate_total_score
+from .total_score import calculate_total_score, convert_to_percentage
 
 
 def ranking_algorithm(target_job, weights):
@@ -43,5 +43,7 @@ def ranking_algorithm(target_job, weights):
             "total_score",
         ]
     ]
+
+    df_resume_rankings_sorted = convert_to_percentage(df_resume_rankings_sorted)
 
     return df_resume_rankings_sorted
