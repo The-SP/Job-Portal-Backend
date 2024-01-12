@@ -1,3 +1,4 @@
+import pandas as pd
 from rest_framework import generics
 from rest_framework.response import Response
 
@@ -33,13 +34,35 @@ class ApplicantRankingView(generics.GenericAPIView):
             "experience": job.experience_required,
         }
 
+        # Filter applicants who have resumes in pdf
+        applicants_with_resume = [
+            {
+                "id": applicant.id,
+                "name": applicant.name,
+                "resume_url": applicant.resume.url.lstrip("/"),
+            }
+            for applicant in applicants
+            if applicant.resume and applicant.resume.url.endswith(".pdf")
+        ]
+
+        # Extract only resume_path list from filtered_applicants
         # resume.url gives '/media/job_19733_resumes/backend.pdf', so need to remove the starting '/' using lstrip('/')
-        resumes = [applicant.resume.url.lstrip("/") for applicant in applicants]
+        resume_paths = [applicant["resume_url"] for applicant in applicants_with_resume]
 
         print('\nProcessing uploaded resumes to extract relevant information..."')
-        parse_resume_files(resumes)
+        parse_resume_files(resume_paths)
 
         print("\n\nEvaluating candidates...")
-        df_resume_rankings = ranking_algorithm(target_job, weights)
+        df_resume = ranking_algorithm(target_job, weights)
 
-        return Response(df_resume_rankings.to_dict(orient="records"))
+        # Convert applicants_with_resume dictionary to a DataFrame
+        df_applicants = pd.DataFrame(applicants_with_resume)
+        # Concatenate df_applicants with df_resume
+        df_resume_rankings = pd.concat([df_resume, df_applicants], axis=1)
+
+        # Sort the DataFrame based on total_score in descending order
+        df_resume_rankings_sorted = df_resume_rankings.sort_values(
+            by="total_score", ascending=False
+        )
+
+        return Response(df_resume_rankings_sorted.to_dict(orient="records"))

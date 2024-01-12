@@ -32,7 +32,7 @@ def ranking_algorithm(target_job, weights):
 
     print("\nEvaluation complete.")
 
-    df_resume_rankings_sorted = df_resume[
+    df_resume = df_resume[
         [
             "Filename",
             "description_score",
@@ -44,6 +44,6 @@ def ranking_algorithm(target_job, weights):
         ]
     ]
 
-    df_resume_rankings_sorted = convert_to_percentage(df_resume_rankings_sorted)
+    df_resume = convert_to_percentage(df_resume)
 
-    return df_resume_rankings_sorted
+    return df_resume

@@ -7,13 +7,15 @@ def calculate_total_score(df_resume, weights):
         + df_resume["experience_score"] * weights["experience"]
     )
 
-    # Sort the DataFrame based on total_score in descending order
-    df_resume_rankings_sorted = df_resume.sort_values(by="total_score", ascending=False)
+    return df_resume
 
-    return df_resume_rankings_sorted
+    # # Sort the DataFrame based on total_score in descending order
+    # df_resume_rankings_sorted = df_resume.sort_values(by="total_score", ascending=False)
+
+    # return df_resume_rankings_sorted
 
 
-def convert_to_percentage(df_resume_rankings_sorted):
+def convert_to_percentage(df_resume):
     score_columns = [
         "description_score",
         "education_score",
@@ -23,8 +25,9 @@ def convert_to_percentage(df_resume_rankings_sorted):
         "total_score",
     ]
 
+    df_resume = df_resume.copy()  # Create a copy
     for column in score_columns:
-        df_resume_rankings_sorted[column] = (
-            df_resume_rankings_sorted[column] * 100
-        ).round()
-    return df_resume_rankings_sorted
+        df_resume[column] = (
+            df_resume[column] * 100
+        ).round().astype(int)
+    return df_resume

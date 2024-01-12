@@ -134,7 +134,8 @@ def extract_years(dates):
             diff = relativedelta(end_date, start_date)
             years += round(diff.years + diff.months / 12, 2)
         except ValueError as e:
-            print(f"Error parsing dates: {e}. Skipping this entry.")
+            # print(f"Error parsing dates: {e}. Skipping this entry.")
+            pass
 
     return years
 
