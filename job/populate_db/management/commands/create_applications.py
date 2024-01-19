@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
 import os
-import random
 from user_system.models import SeekerProfile
-from hiring.models import Job, JobApplication
+from hiring.models import Job
+from job_applications.models import JobApplication
 
 
 class Command(BaseCommand):

@@ -11,8 +11,8 @@ urlpatterns = [
     path("auth/", include("djoser.urls.jwt")),
     # Include other app urls
     path("api/", include("user_system.urls")),
-    # path("api/resume/", include("resume.urls")),
     path("api/jobs/", include("hiring.urls")),
+    path("api/jobs/", include("job_applications.urls")),
     path("api/jobs/", include("recommender.urls")),
     path("api/jobs/", include("resume_ranking.urls")),
     # Swagger UI

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ResumeConfig(AppConfig):
+class JobApplicationsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "resume"
+    name = "job_applications"
