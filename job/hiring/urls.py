@@ -34,4 +34,6 @@ urlpatterns = [
         GetApplicationsForJob.as_view(),
         name="job-application-list",
     ),
+    path('<int:job_id>/applications/download/', DownloadJobApplicationsExcel.as_view(), name='download_job_applications_excel'),
+
 ]
