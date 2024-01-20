@@ -56,3 +56,10 @@ class Job(models.Model):
     """ Dates """
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(
+        UserAccount, on_delete=models.CASCADE, related_name="bookmarks"
+    )
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)

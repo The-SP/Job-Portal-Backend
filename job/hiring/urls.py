@@ -11,6 +11,10 @@ urlpatterns = [
         JobUpdateDestroyView.as_view(),
         name="job-update-destroy",
     ),
+    # Bookmarks
+    path('<int:job_id>/bookmark/', BookmarkCreateView.as_view(), name='bookmark-create'),
+    path('<int:job_id>/bookmark/delete/', BookmarkDestroyView.as_view(), name='bookmark-destroy'),
+    path('bookmarks/', BookmarkListView.as_view(), name='bookmark-list'),
     # Scraped jobs
     path("scraped/", ScrapedJobListView.as_view(), name="scraped-job-list"),
 ]

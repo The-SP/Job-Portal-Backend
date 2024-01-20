@@ -1,7 +1,10 @@
 import pandas as pd
 import ast
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 
 from user_system.permissions import IsEmployer, IsJobOwner
 from .models import *
@@ -67,3 +70,48 @@ class ScrapedJobListView(generics.ListAPIView):
         # Convert pandas dataframe to list of dictionaries
         jobs_list = jobs.to_dict(orient="records")
         return jobs_list
+
+
+""" Views for Bookmark feature """
+
+
+class BookmarkCreateView(generics.CreateAPIView):
+    serializer_class = BookmarkSerializer
+
+    def create(self, request, *args, **kwargs):
+        job_id = self.kwargs["job_id"]
+        job = Job.objects.get(pk=job_id)
+        bookmark = Bookmark.objects.create(user=request.user, job=job)
+        serializer = BookmarkSerializer(bookmark)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class BookmarkDestroyView(APIView):
+    serializer_class = BookmarkSerializer
+
+    def delete(self, request, *args, **kwargs):
+        job_id = self.kwargs["job_id"]
+        try:
+            bookmark = Bookmark.objects.filter(user=request.user, job__id=job_id)
+            bookmark.delete()
+            # Return a successful response with status code 204 (No Content)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Bookmark.DoesNotExist:
+            return Response(
+                {"detail": "Bookmark not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class BookmarkListView(generics.ListAPIView):
+    serializer_class = ShortJobSerializer
+
+    def get_queryset(self):
+        # Get a list of job IDs bookmarked by the user
+        bookmarked_job_ids = Bookmark.objects.filter(
+            user=self.request.user
+        ).values_list("job", flat=True)
+
+        # Retrieve the corresponding Job objects
+        jobs = Job.objects.filter(id__in=bookmarked_job_ids)
+
+        return jobs

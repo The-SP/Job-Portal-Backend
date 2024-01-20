@@ -72,3 +72,9 @@ class ScrapedJobSerializer(serializers.Serializer):
     tags = serializers.ListField(child=serializers.CharField())
     salary = serializers.CharField()
     deadline = serializers.CharField()
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmark
+        fields = "__all__"
