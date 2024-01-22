@@ -38,4 +38,5 @@ class SeekerApplicationsListSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "resume",
+            "status"
         ]

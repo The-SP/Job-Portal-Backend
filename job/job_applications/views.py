@@ -26,9 +26,6 @@ class ApplicationDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = CreateJobApplicationSerializer
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
-
 
 # Get all jobs applied by the Seeker
 class SeekerApplicationListView(generics.ListAPIView):

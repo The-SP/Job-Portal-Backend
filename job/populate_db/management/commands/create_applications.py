@@ -13,7 +13,7 @@ class Command(BaseCommand):
         JOB_ID = 19733
         job = Job.objects.get(pk=JOB_ID)
 
-        # # Delete all job applications for the selected job
+        # Delete all job applications for the selected job
         # job.applications.all().delete()
         # self.stdout.write(f"Deleted job applications for job_id {JOB_ID}.")
         # return
@@ -22,6 +22,8 @@ class Command(BaseCommand):
 
         resume_inputs_path = "media/job_19733_resumes"
         resume_files = [f for f in os.listdir(resume_inputs_path) if f.endswith(".pdf")]
+
+        self.stdout.write(f"Creating job applications for job_id {JOB_ID}.\n")
 
         for seeker in seekers:
             phone_number = seeker.phone_number if seeker.phone_number else ""
@@ -44,7 +46,7 @@ class Command(BaseCommand):
                 )
 
                 self.stdout.write(
-                    f"{seeker.name} sent job application for job_id {JOB_ID} with resume {resume_file}"
+                    f"{seeker.name} applied with resume {resume_file}"
                 )
             else:
                 self.stdout.write(
