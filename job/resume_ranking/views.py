@@ -40,6 +40,7 @@ class ApplicantRankingView(generics.GenericAPIView):
                 "id": applicant.id,
                 "name": applicant.name,
                 "resume_url": applicant.resume.url.lstrip("/"),
+                "status": applicant.status
             }
             for applicant in applicants
             if applicant.resume and applicant.resume.url.endswith(".pdf")
