@@ -42,6 +42,7 @@ class Job(models.Model):
 
     """ Specification """
     education_level = models.CharField(max_length=255, null=True, blank=True)
+    education_field_of_study = models.CharField(max_length=255, null=True, blank=True)
     experience_required = models.IntegerField(null=True, blank=True)
     skill_required = models.TextField(null=True, blank=True)
 

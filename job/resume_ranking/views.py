@@ -29,8 +29,9 @@ class ApplicantRankingView(generics.GenericAPIView):
             "title": job.title,
             "description": job.description,
             "skills": job.skill_required,
-            "education": job.education_level
-            + " in Computer Science",  # Fix the education field later
+            "education": str(job.education_level)
+            + " "
+            + str(job.education_field_of_study),
             "experience": job.experience_required,
         }
 
@@ -40,7 +41,7 @@ class ApplicantRankingView(generics.GenericAPIView):
                 "id": applicant.id,
                 "name": applicant.name,
                 "resume_url": applicant.resume.url.lstrip("/"),
-                "status": applicant.status
+                "status": applicant.status,
             }
             for applicant in applicants
             if applicant.resume and applicant.resume.url.endswith(".pdf")
@@ -50,7 +51,7 @@ class ApplicantRankingView(generics.GenericAPIView):
         # resume.url gives '/media/job_19733_resumes/backend.pdf', so need to remove the starting '/' using lstrip('/')
         resume_paths = [applicant["resume_url"] for applicant in applicants_with_resume]
 
-        print('\nProcessing uploaded resumes to extract relevant information..."')
+        print("\nProcessing uploaded resumes to extract relevant information...")
         parse_resume_files(resume_paths)
 
         print("\n\nEvaluating candidates...")
