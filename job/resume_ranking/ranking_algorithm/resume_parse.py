@@ -34,7 +34,9 @@ def extract_sections_from_pdf(pdf_path, keywords):
                         ):
                             # The text contains a keyword, so start a new section
                             current_section = s["text"].strip().upper()
-                            sections[current_section] = ""
+                            # Initialize the section only if it's seen for the first time
+                            if current_section not in sections:
+                                sections[current_section] = ""  
                         elif current_section is not None:
                             # This is not a section title, so append it to the current section
                             sections[current_section] += s["text"] + " "
