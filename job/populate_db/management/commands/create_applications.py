@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Choose job to populate its job_applications
-        JOB_ID = 19733
+        JOB_ID = 39434
         job = Job.objects.get(pk=JOB_ID)
 
         # Delete all job applications for the selected job
@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         seekers = SeekerProfile.objects.all()
 
-        resume_inputs_path = "media/job_19733_resumes"
+        resume_inputs_path = "media/job_39434_resumes"
         resume_files = [f for f in os.listdir(resume_inputs_path) if f.endswith(".pdf")]
 
         self.stdout.write(f"Creating job applications for job_id {JOB_ID}.\n")
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 resume_file = resume_files.pop(0)
                 resume_path = os.path.join(resume_inputs_path, resume_file)
 
-                resume_path = os.path.join("job_19733_resumes", resume_file)
+                resume_path = os.path.join("job_39434_resumes", resume_file)
 
                 JobApplication.objects.create(
                     user=seeker.user,
