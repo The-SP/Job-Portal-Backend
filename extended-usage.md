@@ -66,11 +66,9 @@ python manage.py update_recommendations
 py manage.py dumpdata > datadump.json
 
 # Install PostgreSQL and pgAdmin
-
 pip install psycopg2
 
-# Comment out recommender in INSTALLED_APPS, and urls first
-py manage.py migrate --run-syncdb
+py manage.py migrate
 
 py manage.py loaddata datadump.json
 ```
